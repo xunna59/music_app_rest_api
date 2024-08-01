@@ -3,6 +3,8 @@ const express = require('express');
 const cors = require('cors');
 const cookieParser = require('cookie-parser');
 const errorHandler = require('./src/middleware/errorHandler');
+const authRoutes = require('./src/routes/authRoutes');
+
 const port = PORT;
 const app = express();
 
@@ -17,7 +19,8 @@ app.use(cookieParser());
 
 
 
-
+// Endpoint for auth routes
+app.use('/auth', authRoutes);
 
 
 // Handles the error across our aplication
