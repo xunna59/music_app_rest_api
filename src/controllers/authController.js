@@ -55,6 +55,8 @@ const login = async (req, res, next) => {
         res.cookie('token', token, { httpOnly: true, secure: process.env.NODE_ENV === 'production' });
         res.json({ message: 'Login successful', token: token });
 
+
+
     } catch (error) {
         next(error);
     }
