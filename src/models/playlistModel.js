@@ -7,7 +7,7 @@ class PlaylistModel {
 
         try {
 
-            const result = await pool.query('INSERT INTO playlists (user_id, playlist_name) VALUE($1, $2) RETURNING *',
+            const result = await pool.query('INSERT INTO playlists (user_id, playlist_name) VALUES ($1, $2) RETURNING *',
                 [user_id, playlist_name]
             );
 
