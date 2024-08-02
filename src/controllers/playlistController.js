@@ -11,7 +11,9 @@ const createPlaylist = async (req, res, next) => {
         return res.status(400).json({ success: false, message: errorMessage });
     }
 
-    const { user_id, playlist_name } = req.body;
+    const { playlist_name } = req.body;
+
+    const user_id = req.user.id
 
     try {
         const playlist = await playlistModel.createPlaylist(user_id, playlist_name);

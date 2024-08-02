@@ -37,6 +37,18 @@ class PlaylistModel {
 
     }
 
+    // async deletePlaylist(playlist_id) {
+
+    //     try{
+
+    //     }catch(error){
+    //         throw new Error(`${error.message}`);
+    //     }
+
+
+
+    // }
+
 
 
 
