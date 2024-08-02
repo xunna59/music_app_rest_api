@@ -13,7 +13,7 @@ const createPlaylist = async (req, res, next) => {
 
     const { playlist_name } = req.body;
 
-    const user_id = req.user.id;
+    const user_id = req.user.userId;
 
     try {
         const playlist = await playlistModel.createPlaylist(user_id, playlist_name);
