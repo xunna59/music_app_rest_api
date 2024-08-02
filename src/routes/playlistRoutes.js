@@ -7,8 +7,9 @@ const authController = require('../controllers/authController');
 
 
 
-router.get('/all-playlists', playlistController.getPlaylists);
-router.post('/create-playlist',
+router.get('/allplaylists', playlistController.getPlaylists);
+
+router.post('/newplaylist',
     authController.authenticateToken,
     body('playlist_name').notEmpty().withMessage('Enter Playlist Name.'),
     playlistController.createPlaylist
