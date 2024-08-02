@@ -5,6 +5,7 @@ const cookieParser = require('cookie-parser');
 const errorHandler = require('./src/middleware/errorHandler');
 const authRoutes = require('./src/routes/authRoutes');
 const spotifyRoutes = require('./src/routes/spotifyRoutes');
+const playlistRoutes = require('./src/routes/playlistRoutes');
 
 
 const port = PORT;
@@ -24,7 +25,7 @@ app.use(cookieParser());
 // Endpoint for auth routes
 app.use('/auth', authRoutes);
 // Use the Spotify routes
-app.use('/playlist', spotifyRoutes);
+app.use('/playlist', playlistRoutes);
 
 
 // Handles the error across our aplication

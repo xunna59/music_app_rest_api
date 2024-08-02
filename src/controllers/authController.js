@@ -55,8 +55,6 @@ const login = async (req, res, next) => {
         res.cookie('token', token, { httpOnly: true, secure: process.env.NODE_ENV === 'production' });
         res.json({ message: 'Login successful', token: token });
 
-
-
     } catch (error) {
         next(error);
     }
@@ -66,13 +64,13 @@ const authenticateToken = (req, res, next) => {
     const authHeader = req.header('Authorization');
 
     if (!authHeader) {
-        return res.status(401).json({ error: 'Access denied. Authentication Failed.' });
+        return res.status(401).json({ error: 'Access denied. No token provided.' });
     }
 
     const token = authHeader.replace('Bearer ', '');
 
     if (!token) {
-        return res.status(401).json({ error: 'Access denied. Authentication Failed.' });
+        return res.status(401).json({ error: 'Access denied. Invalid token format.' });
     }
 
     try {
@@ -80,7 +78,7 @@ const authenticateToken = (req, res, next) => {
         req.user = verified;
         next();
     } catch (error) {
-        res.status(400).json({ error: 'Authentication Failed' });
+        res.status(400).json({ error: 'Invalid token' });
     }
 };
 
