@@ -24,7 +24,7 @@ app.use(cookieParser());
 // Endpoint for auth routes
 app.use('/auth', authRoutes);
 // Use the Spotify routes
-app.use('/api', spotifyRoutes);
+app.use('/playlist', spotifyRoutes);
 
 
 // Handles the error across our aplication

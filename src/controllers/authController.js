@@ -66,13 +66,13 @@ const authenticateToken = (req, res, next) => {
     const authHeader = req.header('Authorization');
 
     if (!authHeader) {
-        return res.status(401).json({ error: 'Access denied. No token provided.' });
+        return res.status(401).json({ error: 'Access denied. Authentication Failed.' });
     }
 
     const token = authHeader.replace('Bearer ', '');
 
     if (!token) {
-        return res.status(401).json({ error: 'Access denied. Invalid token format.' });
+        return res.status(401).json({ error: 'Access denied. Authentication Failed.' });
     }
 
     try {
@@ -80,7 +80,7 @@ const authenticateToken = (req, res, next) => {
         req.user = verified;
         next();
     } catch (error) {
-        res.status(400).json({ error: 'Invalid token' });
+        res.status(400).json({ error: 'Authentication Failed' });
     }
 };
 

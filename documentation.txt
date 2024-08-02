@@ -1,0 +1,85 @@
+// DB schema
+
+CREATE TABLE users (
+    id SERIAL PRIMARY KEY,
+    username VARCHAR(50) NOT NULL,
+    email VARCHAR(255) NOT NULL UNIQUE,
+    dob VARCHAR(50) NOT NULL,
+    gender VARCHAR(50) NOT NULL,
+    password VARCHAR(255) NOT NULL,
+    date_created TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+
+CREATE TABLE playlists (
+    id SERIAL PRIMARY KEY,
+	user_id INT REFERENCES users (id),
+ 	playlist_name VARCHAR(50) NOT NULL,
+    date_created TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+
+
+CREATE TABLE playlist_tracks (
+    id SERIAL PRIMARY KEY,
+	playlist_id INT REFERENCES playlists (id),
+ 	track_id VARCHAR(100) NOT NULL,
+    date_created TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+
+
+
+----------------------------------------------------------------
+API Documentation
+
+
+# Endpoint: https://music-app-rest-api.onrender.com/auth/register
+# Method: POST
+
+# Sample Request
+
+{
+    "username": "{{$randomUserName}}",
+    "email": "{{$randomEmail}}",
+    "password": "zxcvbnm",
+    "dob": "08/20/1994",
+    "gender": "Male"
+}
+
+# Sample Response
+
+{
+    "success": true,
+    "message": "User created successfully",
+    "user": {
+        "id": 1,
+        "username": "Joshuah.Schiller",
+        "email": "Bianka87@gmail.com",
+        "dob": "08/20/1994",
+        "gender": "Male",
+        "password": "$2a$10$hqn5E8Wca6GHUpofLrZT9eO4lPb.usR1Q9kGERGNlMTFmS4ca8ni6",
+        "date_created": "2024-08-02T13:41:21.040Z"
+    }
+}
+#####################################################################
+
+
+# Endpoint: https://music-app-rest-api.onrender.com/auth/login
+# Method: POST
+
+# Sample Request
+
+{
+   
+    "email": "Bianka87@gmail.com",
+    "password": "zxcvbnm",
+    
+}
+
+# Sample Response
+
+{
+    "message": "Login successful",
+    "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjEsImlhdCI6MTcyMjYwNzcyOCwiZXhwIjoxNzIyNjExMzI4fQ._4XtW4KDTSEG4_drBWuNjDKxBLNaNEg1OB6EzIz6xTI"
+}
