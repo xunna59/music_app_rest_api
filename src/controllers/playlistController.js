@@ -1,57 +1,34 @@
-const { validationResult } = require('express-validator');
-const PlaylistModel = require('../models/playlistModel');
-const playlistModel = new PlaylistModel();
+const Playlist = require('../models/playlistModel');
 
 
-const createPlaylist = async (req, res, next) => {
 
-    const errors = validationResult(req);
-    if (!errors.isEmpty()) {
-        const errorMessage = errors.array()[0].msg;
-        return res.status(400).json({ success: false, message: errorMessage });
-    }
-
-    const { playlist_name } = req.body;
-
-    const user_id = req.user.userId;
-
+const createPlaylist = async (req, res) => {
     try {
-        const playlist = await playlistModel.createPlaylist(user_id, playlist_name);
-        res.status(201).json({ success: true, message: 'Playlist created successfully', playlist });
-
+        const { userId, playlistName } = req.body;
+        const playlistId = await createSpotifyPlaylist(userId, playlistName);
+        res.status(201).json({ success: true, playlist: { id: playlistId } });
     } catch (error) {
-
-        next(error);
-
-    }
-
-
-};
-
-
-const getPlaylists = async (req, res, next) => {
-    try {
-
-        const allPlaylists = await playlistModel.fetchPlaylists();
-        res.status(200).json({ success: true, message: 'All Playlists', allPlaylists });
-
-    } catch (error) {
-
+        console.error('Error in createPlaylist controller:', error);
+        res.status(500).json({ error: 'Failed to create playlist' });
     }
 };
 
+const addTrackToPlaylist = async (req, res) => {
 
-
-
-
-
-
-
-
-
-
+    const { playlistId, trackUri } = req.body;
+    try {
+        const playlist = await Playlist.findById(playlistId);
+        if (!playlist) {
+            throw new Error('Playlist not found');
+        }
+        await addTrackToSpotifyPlaylist(playlist.spotifyPlaylistId, trackUri);
+        res.status(200).json({ success: true, message: 'Track added to playlist' });
+    } catch (error) {
+        res.status(500).json({ success: false, message: error.message });
+    }
+};
 
 module.exports = {
     createPlaylist,
-    getPlaylists
-}
+    addTrackToPlaylist
+};

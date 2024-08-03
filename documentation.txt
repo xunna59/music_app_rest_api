@@ -85,3 +85,26 @@ API Documentation
 }
 
 ######################################################################
+
+
+# Endpoint: https://music-app-rest-api.onrender.com/playlist/new-playlist
+# Method: POST
+
+# Sample Request
+
+{
+    "playlist_name": "Afrobeats"
+}
+
+# Sample Response
+
+{
+    "success": true,
+    "message": "Playlist created successfully",
+    "playlist": {
+        "id": 2,
+        "user_id": 1,
+        "playlist_name": "Afrobeats",
+        "date_created": "2024-08-02T22:06:02.349Z"
+    }
+}

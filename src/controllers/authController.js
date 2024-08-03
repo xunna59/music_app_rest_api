@@ -19,6 +19,10 @@ const register = async (req, res, next) => {
     const hashedPassword = await bcrypt.hash(password, 10);
 
     try {
+        const existingUser = await userModel.findUserByEmail(email);
+        if (existingUser) {
+            return res.status(400).json({ success: false, message: 'Email already in use' });
+        }
         const user = await userModel.createUser(username, email, hashedPassword, dob, gender);
         res.status(201).json({ success: true, message: 'User created successfully', user });
     } catch (error) {
@@ -53,7 +57,8 @@ const login = async (req, res, next) => {
         const token = jwt.sign({ userId: user.id }, JWT_SECRET, { expiresIn: '1h' });
         // Set the token as an HTTP-Only cookie
         res.cookie('token', token, { httpOnly: true, secure: process.env.NODE_ENV === 'production' });
-        res.json({ message: 'Login successful', token: token });
+        res.json({ success: true, message: 'Login successful', token: token });
+
 
     } catch (error) {
         next(error);

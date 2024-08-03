@@ -26,6 +26,14 @@ class UserModel {
             throw new Error(` ${error.message}`);
         }
     }
+
+    async deleteUserByEmail(email) {
+        try {
+            await pool.query('DELETE FROM users WHERE email = $1', [email]);
+        } catch (error) {
+            throw new Error(` ${error.message}`);
+        }
+    }
 }
 
 module.exports = UserModel;

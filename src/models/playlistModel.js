@@ -1,58 +1,21 @@
 const pool = require('../config/db_config');
 
-class PlaylistModel {
 
+const createPlaylist = async ({ userId, spotifyPlaylistId, playlistName }) => {
+    const result = await pool.query(
+        'INSERT INTO playlists (user_id, spotify_playlist_id, playlist_name) VALUES ($1, $2, $3) RETURNING *',
+        [userId, spotifyPlaylistId, playlistName]
+    );
+    return result.rows[0];
+};
 
-    async createPlaylist(user_id, playlist_name) {
+const findById = async (id) => {
+    const result = await pool.query('SELECT * FROM playlists WHERE id = $1', [id]);
+    return result.rows[0];
+};
 
-        try {
+module.exports = {
+    create: createPlaylist,
+    findById
+};
 
-            const result = await pool.query('INSERT INTO playlists (user_id, playlist_name) VALUES ($1, $2) RETURNING *',
-                [user_id, playlist_name]
-            );
-
-            return result.rows[0];
-
-        } catch (error) {
-
-            throw new Error(` ${error.message}`);
-
-        }
-
-    }
-
-
-    async fetchPlaylists() {
-
-        try {
-
-            const result = await pool.query('SELECT * FROM playlists');
-            return result.rows;
-
-        } catch (error) {
-
-            throw new Error(` ${error.message}`);
-
-        }
-
-    }
-
-    // async deletePlaylist(playlist_id) {
-
-    //     try{
-
-    //     }catch(error){
-    //         throw new Error(`${error.message}`);
-    //     }
-
-
-
-    // }
-
-
-
-
-
-}
-
-module.exports = PlaylistModel;
