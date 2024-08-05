@@ -1,5 +1,6 @@
 // DB schema
 
+-- Users Table
 CREATE TABLE users (
     id SERIAL PRIMARY KEY,
     username VARCHAR(50) NOT NULL,
@@ -10,20 +11,30 @@ CREATE TABLE users (
     date_created TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
-
+-- Playlists Table
 CREATE TABLE playlists (
     id SERIAL PRIMARY KEY,
-	user_id INT REFERENCES users (id),
- 	playlist_name VARCHAR(50) NOT NULL,
+    user_id INT REFERENCES users(id) ON DELETE CASCADE,
+    playlist_name VARCHAR(50) NOT NULL,
     date_created TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
+-- Music Files Table
+CREATE TABLE music_files (
+    id SERIAL PRIMARY KEY,
+    title VARCHAR(255) NOT NULL,
+    artist VARCHAR(255) NOT NULL,
+    album VARCHAR(255),
+    genre VARCHAR(100),
+    file_path TEXT NOT NULL,
+    date_created TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
 
-
+-- Playlist Tracks Table
 CREATE TABLE playlist_tracks (
     id SERIAL PRIMARY KEY,
-	playlist_id INT REFERENCES playlists (id),
- 	track_id VARCHAR(100) NOT NULL,
+    playlist_id INT REFERENCES playlists(id) ON DELETE CASCADE,
+    music_file_id INT REFERENCES music_files(id) ON DELETE CASCADE,
     date_created TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
@@ -33,7 +44,7 @@ CREATE TABLE playlist_tracks (
 ----------------------------------------------------------------
 API Documentation
 
-
+Register
 # Endpoint: https://music-app-rest-api.onrender.com/auth/register
 # Method: POST
 
@@ -64,7 +75,7 @@ API Documentation
 }
 #####################################################################
 
-
+Login
 # Endpoint: https://music-app-rest-api.onrender.com/auth/login
 # Method: POST
 
@@ -86,14 +97,35 @@ API Documentation
 
 ######################################################################
 
+Fetch Profile
+# Endpoint: https://music-app-rest-api.onrender.com/auth/profile
+# Method: GET
 
-# Endpoint: https://music-app-rest-api.onrender.com/playlist/new-playlist
+
+# Sample Response
+
+{
+    "success": true,
+    "profile": {
+        "id": 43,
+        "username": "Virgie2",
+        "email": "Darrel_Purdy@hotmail.com",
+        "dob": "08/20/1994",
+        "gender": "Male",
+        "date_created": "2024-08-04T22:19:13.085Z"
+    }
+}
+
+######################################################################
+
+Craete Playlist
+# Endpoint: https://music-app-rest-api.onrender.com/playlist/create-playlist
 # Method: POST
 
 # Sample Request
 
 {
-    "playlist_name": "Afrobeats"
+    "playlist_name": "country blues"
 }
 
 # Sample Response
@@ -103,8 +135,148 @@ API Documentation
     "message": "Playlist created successfully",
     "playlist": {
         "id": 2,
-        "user_id": 1,
-        "playlist_name": "Afrobeats",
-        "date_created": "2024-08-02T22:06:02.349Z"
+        "user_id": 43,
+        "playlist_name": "country blues",
+        "date_created": "2024-08-04T22:59:49.252Z"
     }
 }
+
+######################################################################
+
+Fetch User Playlist
+# Endpoint: https://music-app-rest-api.onrender.com/playlist/get-playlists
+# Method: GET
+
+
+# Sample Response
+
+[
+    {
+        "id": 1,
+        "user_id": 43,
+        "playlist_name": "country blues",
+        "date_created": "2024-08-04T22:53:18.450Z"
+    },
+    {
+        "id": 2,
+        "user_id": 43,
+        "playlist_name": "country blues",
+        "date_created": "2024-08-04T22:59:49.252Z"
+    }
+]
+
+######################################################################
+
+Add Track To Playlist
+# Endpoint: https://music-app-rest-api.onrender.com/playlist/add-to-playlist
+# Method: POST
+
+# Sample Request
+
+{
+    "playlist_id": 1,
+    "music_file_id": 2
+}
+
+# Sample Response
+
+{
+    "success": true,
+    "message": "Track Added to Playlist",
+    "playlistTrack": {
+        "id": 2,
+        "playlist_id": 1,
+        "music_file_id": 2,
+         "date_created": "2024-08-05T01:01:28.650Z"
+    }
+}
+
+######################################################################
+
+Upload Track
+# Endpoint: https://music-app-rest-api.onrender.com/track/upload-track
+# Method: POST
+
+# Sample Request
+
+{
+
+"title": "Calm Down",
+"artist": "Rema, Selena Gomez",
+"album": "Midnight Vibes",
+"genre": "Classic Soul, Singer-Songwriter",
+"file_path": "music/Calm Down.mp3"
+
+}
+
+# Sample Response
+
+{
+    "success": true,
+    "message": "Music Track Uploaded successfully",
+    "track": {
+        "id": 2,
+        "title": "Calm Down",
+        "artist": "Rema, Selena Gomez",
+        "album": "Midnight Vibes",
+        "genre": "Classic Soul, Singer-Songwriter",
+        "file_path": "music/Calm Down.mp3",
+        "date_created": "2024-08-05T00:14:58.252Z"
+    }
+}
+
+
+######################################################################
+
+Fetch All Tracks
+# Endpoint: https://music-app-rest-api.onrender.com/track/get-tracks
+# Method: GET
+
+
+# Sample Response
+
+[
+    {
+        "id": 2,
+        "title": "Calm Down",
+        "artist": "Rema, Selena Gomez",
+        "album": "Midnight Vibes",
+        "genre": "Classic Soul, Singer-Songwriter",
+        "file_path": "music/Calm Down.mp3",
+        "date_created": "2024-08-05T00:14:58.252Z"
+    },
+    {
+        "id": 3,
+        "title": "Ojuelegba",
+        "artist": "Wizkid",
+        "album": "Ayo",
+        "genre": "Afrobeats",
+        "file_path": "music/Ojuelegba.mp3",
+        "date_created": "2024-08-05T00:30:20.668Z"
+    }
+]
+
+######################################################################
+
+Fetch Track by ID
+# Endpoint: https://music-app-rest-api.onrender.com/track/:id
+# Method: GET
+
+
+# Sample Response
+
+{
+    "id": 3,
+    "title": "Ojuelegba",
+    "artist": "Wizkid",
+    "album": "Ayo",
+    "genre": "Afrobeats",
+    "file_path": "music/Ojuelegba.mp3"
+}
+
+
+// Spotify API Endpoints
+
+GET https://music-app-rest-api.onrender.com/spotify/api/login
+GET https://music-app-rest-api.onrender.com/spotify/api/search?q=artist%20name
+GET https://music-app-rest-api.onrender.com/spotify/api/play?uri=spotify:track:3n3Ppam7vgaVa1iaRUc9Lp

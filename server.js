@@ -6,6 +6,8 @@ const errorHandler = require('./src/middleware/errorHandler');
 const authRoutes = require('./src/routes/authRoutes');
 const playlistRoutes = require('./src/routes/playlistRoutes');
 const spotifyRoutes = require('./src/routes/spotifyRoutes');
+const trackRoutes = require('./src/routes/trackRoutes');
+
 
 const port = PORT;
 const app = express();
@@ -26,8 +28,10 @@ app.use('/auth', authRoutes);
 // Use the playlist routes
 app.use('/playlist', playlistRoutes);
 // Use the Spotify routes
-
 app.use('/spotify', spotifyRoutes);
+// track routes
+app.use('/track', trackRoutes);
+
 
 
 // Handles the error across our aplication

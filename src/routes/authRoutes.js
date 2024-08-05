@@ -2,7 +2,6 @@ const express = require('express');
 const { body, param } = require('express-validator');
 const router = express.Router();
 const authController = require('../controllers/authController');
-// const { authenticateToken } = require('../controllers/authController');
 
 
 // POST /users - Create a new user
@@ -19,17 +18,15 @@ router.post('/register',
 router.post('/login',
     body('email').isEmail().withMessage('Email is required.'),
     body('password').notEmpty().withMessage('Password is required.'),
-    authController.login
+    authController.login,
+
 );
 
-router.get('/profile', authController.authenticateToken, (req, res) => {
-    res.json({
-        id: req.user.userId,
-        email: req.user.email,
-        username: req.user.username,
-        dob: req.user.dob,
-    });
-});
+router.get('/profile',
+    authController.authenticateToken,
+    authController.getProfile
+);
+
 
 
 

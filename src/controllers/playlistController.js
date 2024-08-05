@@ -1,34 +1,56 @@
-const Playlist = require('../models/playlistModel');
+const PlaylistModel = require('../models/playlistModel');
+const playlistModel = new PlaylistModel();
+const { validationResult } = require('express-validator');
 
 
 
-const createPlaylist = async (req, res) => {
+
+const createPlaylist = async (req, res, next) => {
+    // Validate Request 
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+        const errorMessage = errors.array()[0].msg;
+        return res.status(400).json({ success: false, message: errorMessage });
+    }
+    // Proceed with request if no errors are found during validation
+    const { playlist_name } = req.body;
+    const userId = req.user.userId
     try {
-        const { userId, playlistName } = req.body;
-        const playlistId = await createSpotifyPlaylist(userId, playlistName);
-        res.status(201).json({ success: true, playlist: { id: playlistId } });
+        const playlist = await playlistModel.createPlaylist(userId, playlist_name);
+        res.status(201).json({ success: true, message: "Playlist created successfully", playlist });
     } catch (error) {
-        console.error('Error in createPlaylist controller:', error);
-        res.status(500).json({ error: 'Failed to create playlist' });
+        next(error);
     }
 };
 
-const addTrackToPlaylist = async (req, res) => {
-
-    const { playlistId, trackUri } = req.body;
+const getAllPlaylists = async (req, res, next) => {
     try {
-        const playlist = await Playlist.findById(playlistId);
-        if (!playlist) {
-            throw new Error('Playlist not found');
-        }
-        await addTrackToSpotifyPlaylist(playlist.spotifyPlaylistId, trackUri);
-        res.status(200).json({ success: true, message: 'Track added to playlist' });
+        const playlists = await playlistModel.getAllPlaylists();
+        res.status(200).json(playlists);
     } catch (error) {
-        res.status(500).json({ success: false, message: error.message });
+        next(error);
+    }
+};
+
+const addTrackToPlaylist = async (req, res, next) => {
+
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+        const errorMessage = errors.array()[0].msg;
+        return res.status(400).json({ success: false, message: errorMessage });
+    }
+    // Proceed with request if no errors are found during validation
+    const { playlist_id, music_file_id } = req.body;
+    try {
+        const playlistTrack = await playlistModel.addTrackToPlaylist(playlist_id, music_file_id);
+        res.status(201).json({ success: true, message: "Track Added to Playlist", playlistTrack });
+    } catch (error) {
+        next(error);
     }
 };
 
 module.exports = {
     createPlaylist,
+    getAllPlaylists,
     addTrackToPlaylist
 };

@@ -65,6 +65,38 @@ const login = async (req, res, next) => {
     }
 };
 
+const getProfile = async (req, res) => {
+    try {
+        // Ensure user is authenticated
+        if (!req.user || !req.user.userId) {
+            return res.status(401).json({ error: 'Unauthorized' });
+        }
+
+        const userId = req.user.userId;
+
+        const userProfile = await userModel.findById(userId);
+
+        // Check if the user was found
+        if (!userProfile) {
+            return res.status(404).json({ error: 'User not found' });
+        }
+
+
+        res.status(200).json({ success: true, profile: userProfile });
+    } catch (error) {
+        next(error);
+    }
+};
+
+
+
+
+
+
+
+
+
+
 const authenticateToken = (req, res, next) => {
     const authHeader = req.header('Authorization');
 
@@ -94,5 +126,6 @@ const authenticateToken = (req, res, next) => {
 module.exports = {
     register,
     login,
+    getProfile,
     authenticateToken,
 };
